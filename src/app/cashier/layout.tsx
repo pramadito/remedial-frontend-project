@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useActiveShift } from "./_hooks/useShiftApi";
+// import { useActiveShift } from "./_hooks/useShiftApi";
 import { useRoleGuard } from "@/hooks/useRoleGuard";
 import { signOut } from "next-auth/react";
 import { LogOutIcon } from "lucide-react";
@@ -10,7 +10,7 @@ import { LogOutIcon } from "lucide-react";
 export default function CashierLayout({ children }: { children: React.ReactNode }) {
   const { checked, allowed } = useRoleGuard(["CASHIER"], { message: "Halaman kasir hanya untuk role CASHIER", redirectTo: "/admin" });
   const pathname = usePathname();
-  const { data: activeShift } = useActiveShift(allowed);
+  //const { data: activeShift } = useActiveShift(allowed);
   const tabs = [
     { href: "/cashier", label: "POS" },
     { href: "/cashier/transactions", label: "Transaksi" },
@@ -35,7 +35,7 @@ export default function CashierLayout({ children }: { children: React.ReactNode 
             ))}
           </nav>
           <div className="ml-4 hidden sm:flex items-center gap-2 text-xs">
-            {activeShift ? (
+            {/* {activeShift ? (
               <>
                 <span className="rounded-full bg-emerald-100 text-emerald-700 px-2 py-1">
                   Shift aktif · {new Date(activeShift.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -47,7 +47,7 @@ export default function CashierLayout({ children }: { children: React.ReactNode 
                 <span className="rounded-full bg-amber-100 text-amber-800 px-2 py-1">Belum mulai shift</span>
                 <Link href="/cashier/shift" className="px-2 py-1 rounded-md border hover:bg-slate-50">Mulai</Link>
               </>
-            )}
+            )} */}
             <button
               onClick={() => {
                 if (typeof window !== "undefined") {
