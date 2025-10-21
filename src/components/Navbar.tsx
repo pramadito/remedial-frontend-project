@@ -11,13 +11,17 @@ const Navbar = () => {
   const session = useSession();
 
   const logout = () => {
-    signOut();
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("role");
+    }
+    signOut({ callbackUrl: "/sign-in" });
   };
 
   return (
     <nav className="container mx-auto p-4 flex justify-between items-center ">
       <Link href="/">
-        <p className={`text-3xl font-bold ${lato.className}`}>BlogGo</p>
+        <p className={`text-3xl font-bold ${lato.className}`}>Cashier App</p>
       </Link>
 
       <div className="flex items-center gap-4">

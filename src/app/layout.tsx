@@ -1,4 +1,4 @@
-import Navbar from "@/components/Navbar";
+import TopNavGate from "@/components/TopNavGate";
 import { Toaster } from "@/components/ui/sonner";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import type { Metadata } from "next";
@@ -35,7 +35,7 @@ export default function RootLayout({
       >
         <ReactQueryProvider>
           <NextAuthProvider>
-            <Navbar />
+            <TopNavGate />
             {children}
           </NextAuthProvider>
         </ReactQueryProvider>
