@@ -15,9 +15,35 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Loader } from "lucide-react";
 import useLogin from "./_hooks/useLogin";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const SignIn = () => {
   const { mutateAsync: login, isPending } = useLogin();
+  const router = useRouter();
+  const { status, data } = useSession();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (status === "authenticated") {
+      // If session exists but local tokens are missing, clean session and stay on sign-in
+      const token = localStorage.getItem("accessToken");
+      const storedRole = localStorage.getItem("role");
+      if (!token || !storedRole) {
+        // silently clear session so user can sign in again
+        import("next-auth/react").then(({ signOut }) => signOut({ redirect: false }));
+        return;
+      }
+      const role = (data?.user as any)?.role as string | undefined;
+      const finalRole = storedRole || role;
+      if (finalRole) router.replace(finalRole === "ADMIN" ? "/admin" : "/");
+    } else if (status === "unauthenticated") {
+      // ensure stale tokens do not block access to sign-in
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("role");
+    }
+  }, [status, data, router]);
 
   return (
     <main className="container mx-auto">

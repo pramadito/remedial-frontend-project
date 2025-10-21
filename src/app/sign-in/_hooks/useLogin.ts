@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
-import { User } from "@/types/user";
+import { Role, User } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
@@ -16,13 +16,23 @@ const useLogin = () => {
 
   return useMutation({
     mutationFn: async (payload: Payload) => {
-      const { data } = await axiosInstance.post<User>("/auth/login", payload);
+      const { data } = await axiosInstance.post<
+        User & { accessToken: string }
+      >("/auth/login", payload);
       return data;
     },
     onSuccess: async (data) => {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("role", String(data.role));
+      }
       await signIn("credentials", { ...data, redirect: false });
       toast.success("sign in success");
-      router.replace("/");
+      if ((data.role as Role) === "ADMIN") {
+        router.replace("/admin");
+      } else {
+        router.replace("/");
+      }
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data.message ?? "Something went wrong!");

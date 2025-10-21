@@ -15,6 +15,9 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Wrench } from "lucide-react";
 import * as Yup from "yup";
 import useRegister from "./_hooks/useRegister";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required").min(3),
@@ -23,7 +26,19 @@ const validationSchema = Yup.object().shape({
 });
 
 const SignUp = () => {
+  const router = useRouter();
+  const { status, data } = useSession();
   const { mutateAsync: register, isPending } = useRegister();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      const role = (data?.user as any)?.role as string | undefined;
+      if (role) {
+        const redirectPath = role === "ADMIN" ? "/admin" : "/";
+        router.replace(redirectPath);
+      }
+    }
+  }, [status, data, router]);
 
   return (
     <main className="container mx-auto">
