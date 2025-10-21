@@ -15,7 +15,7 @@ const Navbar = () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("role");
     }
-    signOut({ callbackUrl: "/sign-in" });
+    signOut({ callbackUrl: "/login" });
   };
 
   return (
@@ -35,8 +35,8 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <Link href="/sign-in">Sign in</Link>
-            <Link href="/sign-up">Sign up</Link>
+            <Link href="/login">Login</Link>
+            <Link href="/register">Register</Link>
           </>
         )}
       </div>

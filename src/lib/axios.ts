@@ -22,7 +22,7 @@ axiosInstance.interceptors.response.use(
     const status = error?.response?.status;
     if (status === 401) {
       if (typeof window !== "undefined") {
-        window.location.href = "/sign-in";
+        window.location.href = "/login";
       }
     } else if (status === 403) {
       if (typeof window !== "undefined") {
