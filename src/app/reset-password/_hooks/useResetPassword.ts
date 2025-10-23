@@ -5,27 +5,29 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface Payload {
-  name: string;
-  email: string;
   password: string;
 }
 
-const useRegister = () => {
+const useResetPassword = (token: string) => {
   const router = useRouter();
-
   return useMutation({
     mutationFn: async (payload: Payload) => {
-      const { data } = await axiosInstance.post("/auth/register", payload);
+      const { data } = await axiosInstance.patch<{ message: string }>(
+        "/auth/reset-password",
+        payload,
+        {headers: {Authorization: `Bearer ${token}`}}
+      );
       return data;
     },
-    onSuccess: () => {
-      toast.success("sign up success");
-      router.push("/login");
+    onSuccess: async (data) => {
+      toast.success("reset password success");
+      router.replace("/sign-in");
     },
     onError: (error: AxiosError<{ message: string }>) => {
+      console.log(error);
       toast.error(error.response?.data.message ?? "Something went wrong!");
     },
   });
 };
 
-export default useRegister;
+export default useResetPassword;

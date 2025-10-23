@@ -19,7 +19,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-const Login = () => {
+const SignIn = () => {
   const { mutateAsync: login, isPending } = useLogin();
   const router = useRouter();
   const { status, data } = useSession();
@@ -112,4 +112,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignIn;
