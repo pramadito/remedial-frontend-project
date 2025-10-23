@@ -20,7 +20,7 @@ const useRegister = () => {
     },
     onSuccess: () => {
       toast.success("sign up success");
-      router.push("/sign-in");
+      router.push("/login");
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data.message ?? "Something went wrong!");

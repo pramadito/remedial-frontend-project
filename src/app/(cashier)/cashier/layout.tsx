@@ -54,7 +54,7 @@ export default function CashierLayout({ children }: { children: React.ReactNode 
                   localStorage.removeItem("accessToken");
                   localStorage.removeItem("role");
                 }
-                signOut({ callbackUrl: "/sign-in" });
+                signOut({ callbackUrl: "/login" });
               }}
               className="px-2 py-1 rounded-md border hover:bg-slate-50 flex items-center gap-1 text-slate-700"
             >
