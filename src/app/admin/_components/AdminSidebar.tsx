@@ -52,7 +52,7 @@ export default function AdminSidebar() {
               localStorage.removeItem("accessToken");
               localStorage.removeItem("role");
             }
-            signOut({ callbackUrl: "/login" });
+            signOut({ callbackUrl: "/sign-in" });
           }}
           className="w-full flex items-center justify-center gap-2 rounded-md bg-white/10 hover:bg-white/20 text-white text-sm py-2"
         >

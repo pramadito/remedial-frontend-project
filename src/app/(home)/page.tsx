@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 export default async function Home() {
   const session = await auth();
   if (!session?.user) {
-    redirect("/login");
+    redirect("/sign-in");
   }
   const role = (session.user as any)?.role as string | undefined;
   if (role === "ADMIN") {
