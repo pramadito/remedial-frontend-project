@@ -14,8 +14,8 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-//import { useActiveShift } from "./_hooks/useShiftApi";
-//import { usePosCheckout } from "./_hooks/usePosCheckout";
+import { useActiveShift } from "./_hooks/useShiftApi";
+import { usePosCheckout } from "./_hooks/usePosCheckout";
 import { useRouter } from "next/navigation";
 import { useRoleGuard } from "@/hooks/useRoleGuard";
 
@@ -32,8 +32,8 @@ export default function CashierPOSPage() {
   const router = useRouter();
   const { checked, allowed } = useRoleGuard(["CASHIER"], { message: "Halaman kasir hanya untuk role CASHIER", redirectTo: "/admin" });
   const { data: products, isLoading } = useProducts();
-  //const { data: activeShift, isLoading: loadingShift } = useActiveShift(allowed);
-  //const { mutateAsync: posCheckout, isPending: submitting } = usePosCheckout();
+  const { data: activeShift, isLoading: loadingShift } = useActiveShift(allowed);
+  const { mutateAsync: posCheckout, isPending: submitting } = usePosCheckout();
 
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -104,10 +104,10 @@ export default function CashierPOSPage() {
       toast.error("Keranjang kosong");
       return;
     }
-    // if (!activeShift) {
-    //   toast.error("Mulai shift terlebih dahulu untuk melakukan transaksi");
-    //   return;
-    // }
+    if (!activeShift) {
+      toast.error("Mulai shift terlebih dahulu untuk melakukan transaksi");
+      return;
+    }
     if (payment === "CASH") {
       const c = Number(cashGiven);
       if (Number.isNaN(c) || c < totals.subtotal) {
@@ -120,14 +120,14 @@ export default function CashierPOSPage() {
       return;
     }
     const payload = {
-      //shiftId: activeShift.id,
+      shiftId: activeShift.id,
       paymentMethod: payment,
       cashAmount: payment === "CASH" ? Number(cashGiven || 0) : undefined,
       debitCardNumber: payment === "DEBIT" ? cardNumber : undefined,
       items: cart.map((it) => ({ productId: it.id, quantity: it.qty })),
     };
     try {
-      //await posCheckout(payload);
+      await posCheckout(payload);
       toast.success("Transaksi berhasil");
       resetCart();
     } catch {
@@ -147,11 +147,11 @@ export default function CashierPOSPage() {
         </div>
       </section>
 
-      {/* {!activeShift && !loadingShift && (
+      {!activeShift && !loadingShift && (
         <div className="rounded-md border border-amber-200 bg-amber-50 text-amber-900 px-4 py-3 text-sm">
           Belum ada shift aktif. Silakan mulai shift pada halaman <a href="/cashier/shift" className="underline">Shift</a> untuk bertransaksi.
         </div>
-      )} */}
+      )}
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         {/* Products */}
@@ -243,7 +243,7 @@ export default function CashierPOSPage() {
                   type="button"
                   variant={payment === "CASH" ? "default" : "outline"}
                   onClick={() => setPayment("CASH")}
-                  //disabled={!activeShift}
+                  disabled={!activeShift}
                 >
                   Tunai
                 </Button>
@@ -251,7 +251,7 @@ export default function CashierPOSPage() {
                   type="button"
                   variant={payment === "DEBIT" ? "default" : "outline"}
                   onClick={() => setPayment("DEBIT")}
-                  //disabled={!activeShift}
+                  disabled={!activeShift}
                 >
                   Debit
                 </Button>
@@ -260,19 +260,19 @@ export default function CashierPOSPage() {
               {payment === "CASH" ? (
                 <div className="grid gap-2">
                   <label className="text-sm" htmlFor="cash">Uang diterima</label>
-                  {/* <Input id="cash" value={cashGiven} onChange={(e) => setCashGiven(e.target.value)} placeholder="0" disabled={!activeShift} /> */}
+                  <Input id="cash" value={cashGiven} onChange={(e) => setCashGiven(e.target.value)} placeholder="0" disabled={!activeShift} />
                   <div className="text-sm text-muted-foreground">Kembalian: <span className="font-medium text-emerald-600">Rp {change.toLocaleString()}</span></div>
                 </div>
               ) : (
                 <div className="grid gap-2">
                   <label className="text-sm" htmlFor="card">Nomor Kartu</label>
-                  {/* <Input id="card" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} placeholder="XXXX-XXXX-XXXX-XXXX" disabled={!activeShift} /> */}
+                  <Input id="card" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} placeholder="XXXX-XXXX-XXXX-XXXX" disabled={!activeShift} />
                 </div>
               )}
             </CardContent>
             <CardFooter className="flex items-center justify-between">
               <Button variant="outline" onClick={resetCart}>Bersihkan</Button>
-              {/* <Button onClick={checkout} disabled={!activeShift || cart.length === 0 || submitting}>Bayar</Button> */}
+              <Button onClick={checkout} disabled={!activeShift || cart.length === 0 || submitting}>Bayar</Button>
             </CardFooter>
           </Card>
         </div>
