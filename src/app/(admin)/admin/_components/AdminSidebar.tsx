@@ -15,9 +15,11 @@ const navItems = [
 export default function AdminSidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Close sidebar when route changes on mobile
   useEffect(() => {
+    setIsMounted(true);
     setIsOpen(false);
   }, [pathname]);
 
@@ -35,6 +37,15 @@ export default function AdminSidebar() {
     document.addEventListener("click", handleOutsideClick);
     return () => document.removeEventListener("click", handleOutsideClick);
   }, [isOpen]);
+
+  const handleSignOut = () => {
+    // Only access localStorage on client side
+    if (isMounted) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("role");
+    }
+    signOut({ callbackUrl: "/login" });
+  };
 
   return (
     <>
@@ -81,13 +92,7 @@ export default function AdminSidebar() {
               );
             })}
             <button
-              onClick={() => {
-                if (typeof window !== "undefined") {
-                  localStorage.removeItem("accessToken");
-                  localStorage.removeItem("role");
-                }
-                signOut({ callbackUrl: "/login" });
-              }}
+              onClick={handleSignOut}
               className="flex items-center gap-2 rounded-md bg-white/10 hover:bg-white/20 text-white text-sm px-3 py-2 ml-2"
             >
               <LogOutIcon className="size-4" /> Sign out
@@ -117,13 +122,7 @@ export default function AdminSidebar() {
             );
           })}
           <button
-            onClick={() => {
-              if (typeof window !== "undefined") {
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("role");
-              }
-              signOut({ callbackUrl: "/login" });
-            }}
+            onClick={handleSignOut}
             className="w-full flex items-center justify-center gap-2 rounded-md bg-white/10 hover:bg-white/20 text-white text-sm py-2"
           >
             <LogOutIcon className="size-4" /> Sign out
