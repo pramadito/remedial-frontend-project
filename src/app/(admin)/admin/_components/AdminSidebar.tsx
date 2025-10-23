@@ -47,9 +47,9 @@ export default function AdminSidebar() {
         {isOpen ? <XIcon className="size-6" /> : <MenuIcon className="size-6" />}
       </button>
 
-      {/* Top Navigation Bar */}
+      {/* Top Navigation Bar - Fixed on all screen sizes */}
       <header
-        className={`sidebar-container fixed md:fixed inset-x-0 top-0 z-40 w-full border-b bg-gradient-to-r from-indigo-700 to-indigo-800 text-indigo-50 transform transition-transform duration-300 ease-in-out ${
+        className={`sidebar-container fixed inset-x-0 top-0 z-40 w-full border-b bg-gradient-to-r from-indigo-700 to-indigo-800 text-indigo-50 transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-y-0" : "-translate-y-full md:translate-y-0"
         } ${!isOpen ? "md:flex" : "flex"}`}
       >
