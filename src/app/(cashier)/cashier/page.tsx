@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useProducts } from "@/app/admin/products/_hooks/useProducts";
+import { useProducts } from "@/app/(admin)/admin/products/_hooks/useProducts";
 import { Product } from "@/types/product";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
