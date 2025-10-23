@@ -17,9 +17,9 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white">
-      <div className="mx-auto max-w-[1400px] grid min-h-screen md:grid-cols-[16rem_1fr] lg:grid-cols-[18rem_1fr]">
+      <div className="mx-auto max-w-[1400px]">
         <AdminSidebar />
-        <main className="p-4 md:p-8 space-y-6">
+        <main className="p-4 md:p-8 space-y-6 pt-20 md:pt-20">
           {/* Client-side guard to show toast and ensure redirect for non-admins */}
           <AdminGuard />
           {children}
