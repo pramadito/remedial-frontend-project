@@ -74,7 +74,7 @@ export default function AdminReportsPage() {
       <AdminBreadcrumbs items={[{ label: "Admin", href: "/admin" }, { label: "Reports" }]} />
 
       {/* Header */}
-      <section className="rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-6 text-white shadow-sm">
+      <section className="rounded-xl bg-gradient-to-r from-primary to-indigo-500 px-5 py-6 text-white shadow-sm">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-wide">Reports</h1>
