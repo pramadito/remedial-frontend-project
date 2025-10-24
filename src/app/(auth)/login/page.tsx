@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { Loader } from "lucide-react";
+import { Loader, Lock } from "lucide-react";
 import useLogin from "./_hooks/useLogin";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -46,68 +46,83 @@ const SignIn = () => {
   }, [status, data, router]);
 
   return (
-    <main className="container mx-auto">
-      <Card className="w-full max-w-sm mx-auto mt-24">
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          onSubmit={async (values) => {
-            await login({ email: values.email, password: values.password });
-          }}
-        >
-          <Form className="space-y-4">
-            <CardHeader>
-              <CardTitle>Login to your account</CardTitle>
-              <CardDescription>
-                Enter your email below to login to your account
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-6">
-                {/* EMAIL */}
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Field
-                    name="email"
-                    as={Input}
-                    type="email"
-                    placeholder="Your email"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="p"
-                    className="text-sm text-red-500"
-                  />
+    <main className="flex min-h-screen items-center justify-center bg-background p-4 md:p-6">
+      <div className="w-full max-w-sm">
+        <Card className="w-full">
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            onSubmit={async (values) => {
+              await login({ email: values.email, password: values.password });
+            }}
+          >
+            <Form className="space-y-4">
+              <CardHeader className="space-y-1 text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                    <Lock className="h-6 w-6 text-primary" />
+                  </div>
                 </div>
-
-                {/* PASSWORD */}
-                <div className="grid gap-2">
-                  <div className="flex justify-between items-center">
-                    <Label htmlFor="password">Password</Label>
-                    <Link href="/forgot-password">Forgot Password?</Link>
+                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardDescription>
+                  Securely access the cashier system.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-6">
+                  {/* Email */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Field
+                      name="email"
+                      as={Input}
+                      type="text"
+                      placeholder="Email"
+                      autoComplete="email"
+                    />
+                    <ErrorMessage
+                      name="email"
+                      component="p"
+                      className="text-sm text-red-500"
+                    />
                   </div>
 
-                  <Field
-                    name="password"
-                    as={Input}
-                    type="password"
-                    placeholder="Your password"
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="p"
-                    className="text-sm text-red-500"
-                  />
+                  {/* PASSWORD */}
+                  <div className="grid gap-2">
+                    <div className="flex justify-between items-center">
+                      <Label htmlFor="password">Password</Label>
+                      {/* <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+                        Forgot Password?
+                      </Link> */}
+                    </div>
+
+                    <Field
+                      name="password"
+                      as={Input}
+                      type="password"
+                      placeholder="Password"
+                      autoComplete="current-password"
+                    />
+                    <ErrorMessage
+                      name="password"
+                      component="p"
+                      className="text-sm text-red-500"
+                    />
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex-col gap-2">
-              <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? <Loader className="animate-spin" /> : "Login"}
-              </Button>
-            </CardFooter>
-          </Form>
-        </Formik>
-      </Card>
+              </CardContent>
+              <CardFooter className="flex-col gap-2">
+                <Button type="submit" className="w-full" disabled={isPending}>
+                  {isPending ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Login
+                </Button>
+                <p className="mt-4 text-center text-xs text-muted-foreground">
+                  © 2025 Cashier App. All rights reserved.
+                </p>
+              </CardFooter>
+            </Form>
+          </Formik>
+        </Card>
+      </div>
     </main>
   );
 };

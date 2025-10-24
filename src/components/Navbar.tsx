@@ -25,7 +25,7 @@ const Navbar = () => {
       </Link>
 
       <div className="flex items-center gap-4">
-        <Link href="/">Home</Link>
+        {/* <Link href="/">Home</Link> */}
         {session.data?.user ? (
           <>
             <Link href="/write">Write</Link>
@@ -36,7 +36,7 @@ const Navbar = () => {
         ) : (
           <>
             <Link href="/login">Login</Link>
-            <Link href="/register">Register</Link>
+            {/* <Link href="/register">Register</Link> */}
           </>
         )}
       </div>
