@@ -61,13 +61,13 @@ export default function AdminCashiersPage() {
   return (
     <div className="space-y-6">
       <AdminBreadcrumbs items={[{ label: "Admin", href: "/admin" }, { label: "Cashiers" }]} />
-      <section className="rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-6 text-white shadow-sm">
+      <section className="rounded-xl bg-gradient-to-r from-primary to-indigo-500 px-5 py-6 text-white shadow-sm">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-wide">Cashiers</h1>
             <p className="text-indigo-100 text-sm">Kelola akun kasir</p>
           </div>
-          <Button asChild className="bg-white text-indigo-700 hover:bg-white/90">
+          <Button asChild className="bg-white text-primary hover:bg-white/90">
             <Link href="/admin/cashiers/new">Tambah Kasir</Link>
           </Button>
         </div>
@@ -93,7 +93,7 @@ export default function AdminCashiersPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-indigo-50/60 text-indigo-900">
+              <thead className="bg-indigo-50/60 text-primary">
                 <tr className="text-left">
                   <th className="py-3 pl-4 pr-4 w-full max-w-xs">Nama</th>
                   <th className="py-3 pr-4 whitespace-nowrap w-1/12">Email</th>
@@ -107,7 +107,7 @@ export default function AdminCashiersPage() {
                     <td className="py-3 pr-4 align-middle whitespace-nowrap">{c.email}</td>
                     <td className="py-3 pr-4 whitespace-nowrap text-right align-middle">
                       <div className="grid grid-flow-col auto-cols-max items-center gap-2 justify-end whitespace-nowrap">
-                        <Button variant="secondary" size="sm" asChild className="bg-indigo-600 text-white hover:bg-indigo-500">
+                        <Button variant="secondary" size="sm" asChild className="bg-primary text-white hover:bg-indigo-500">
                           <Link href={`/admin/cashiers/${c.id}`}>Edit</Link>
                         </Button>
                         <Button

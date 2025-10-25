@@ -7,15 +7,17 @@ import { useActiveShift } from "../_hooks/useShiftApi";
 import { useTransactionsByShift } from "../_hooks/useTransactions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import { Eye, Filter, X, Calendar, DollarSign, CreditCard } from "lucide-react";
 import { Transaction } from "@/types/transaction";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 export default function CashierTransactionsPage() {
   const { checked, allowed } = useRoleGuard(["CASHIER"], { message: "Halaman kasir hanya untuk role CASHIER", redirectTo: "/admin" });
   const { data: activeShift, isLoading: loadingShift } = useActiveShift(allowed);
   const { data: transactions, isLoading } = useTransactionsByShift(undefined, allowed);
   const [selected, setSelected] = useState<Transaction | null>(null);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
 
   const fmt = (n: number) => `Rp ${n.toLocaleString("id-ID")}`;
 
@@ -74,7 +76,7 @@ export default function CashierTransactionsPage() {
   if (!checked) return null;
   if (loadingShift) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 p-4">
         <h1 className="text-xl font-semibold">Transaksi</h1>
         <p className="text-sm text-muted-foreground">Memeriksa shift aktif...</p>
       </div>
@@ -82,57 +84,132 @@ export default function CashierTransactionsPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Transaksi</h1>
+    <div className="space-y-4 p-4 pb-20">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold">Transaksi</h1>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex items-center gap-1"
+        >
+          <Filter className="h-4 w-4" />
+          Filter
+        </Button>
+      </div>
 
       {!activeShift && (
         <Card>
-          <CardHeader>
-            <CardTitle>Belum ada shift aktif</CardTitle>
-            <CardDescription>Anda tetap dapat melihat riwayat transaksi. Mulai shift untuk menandai transaksi sebagai bagian dari shift aktif.</CardDescription>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Belum ada shift aktif</CardTitle>
+            <CardDescription className="text-sm">Anda tetap dapat melihat riwayat transaksi. Mulai shift untuk menandai transaksi sebagai bagian dari shift aktif.</CardDescription>
           </CardHeader>
-          <CardContent>
-            <Link href="/cashier/shift" className="text-indigo-600 hover:underline">Buka halaman Shift</Link>
+          <CardContent className="pt-0">
+            <Link href="/cashier/shift" className="text-primary hover:underline text-sm">Buka halaman Shift</Link>
+          </CardContent>
+        </Card>
+      )}
+
+      {showFilters && (
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base">Filter</CardTitle>
+              <Button size="sm" variant="ghost" onClick={() => setShowFilters(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div>
+              <p className="text-xs text-muted-foreground mb-2">Metode Pembayaran</p>
+              <div className="flex flex-wrap gap-2">
+                <Button 
+                  size="sm" 
+                  variant={paymentFilter === "ALL" ? "default" : "outline"} 
+                  onClick={() => setPaymentFilter("ALL")}
+                  className="text-xs"
+                >
+                  Semua
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant={paymentFilter === "CASH" ? "default" : "outline"} 
+                  onClick={() => setPaymentFilter("CASH")}
+                  className="text-xs"
+                >
+                  Tunai
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant={paymentFilter === "DEBIT" ? "default" : "outline"} 
+                  onClick={() => setPaymentFilter("DEBIT")}
+                  className="text-xs"
+                >
+                  Debit
+                </Button>
+              </div>
+            </div>
+            
+            {activeShift && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Shift</p>
+                <Button 
+                  size="sm" 
+                  variant={onlyActive ? "default" : "outline"} 
+                  onClick={() => setOnlyActive((x) => !x)}
+                  className="text-xs"
+                >
+                  {onlyActive ? "Shift aktif" : "Semua shift"}
+                </Button>
+              </div>
+            )}
+            
+            <div>
+              <p className="text-xs text-muted-foreground mb-2">Tanggal</p>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-muted-foreground">Dari</label>
+                  <Input 
+                    type="date" 
+                    value={dateFrom} 
+                    onChange={(e) => setDateFrom(e.target.value)} 
+                    className="text-xs h-8"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground">Sampai</label>
+                  <Input 
+                    type="date" 
+                    value={dateTo} 
+                    onChange={(e) => setDateTo(e.target.value)} 
+                    className="text-xs h-8"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={() => { 
+                setPaymentFilter("ALL"); 
+                setOnlyActive(false); 
+                setDateFrom(""); 
+                setDateTo(""); 
+              }}
+              className="text-xs w-full"
+            >
+              Reset Filter
+            </Button>
           </CardContent>
         </Card>
       )}
 
       <Card>
-        <CardHeader>
-          <CardTitle>Filter</CardTitle>
-          <CardDescription>Sesuaikan tampilan transaksi</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2">
-              <Button size="sm" variant={paymentFilter === "ALL" ? "default" : "outline"} onClick={() => setPaymentFilter("ALL")}>Semua</Button>
-              <Button size="sm" variant={paymentFilter === "CASH" ? "default" : "outline"} onClick={() => setPaymentFilter("CASH")}>Tunai</Button>
-              <Button size="sm" variant={paymentFilter === "DEBIT" ? "default" : "outline"} onClick={() => setPaymentFilter("DEBIT")}>Debit</Button>
-            </div>
-            {activeShift && (
-              <Button size="sm" variant={onlyActive ? "default" : "outline"} onClick={() => setOnlyActive((x) => !x)}>
-                {onlyActive ? "Shift aktif" : "Semua shift"}
-              </Button>
-            )}
-            <div className="flex items-center gap-2">
-              <label className="text-xs text-muted-foreground">Dari</label>
-              <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="text-xs text-muted-foreground">Sampai</label>
-              <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
-            </div>
-            <Button size="sm" variant="ghost" onClick={() => { setPaymentFilter("ALL"); setOnlyActive(false); setDateFrom(""); setDateTo(""); }}>
-              Reset
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Ringkasan</CardTitle>
-          <CardDescription>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Ringkasan</CardTitle>
+          <CardDescription className="text-sm">
             {activeShift ? (
               <>ID Shift aktif: {activeShift.id}</>
             ) : (
@@ -141,31 +218,37 @@ export default function CashierTransactionsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <div className="text-muted-foreground">Jumlah transaksi</div>
-              <div className="font-semibold">{summary.count}</div>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="bg-slate-50 p-3 rounded-lg">
+              <div className="text-muted-foreground text-xs">Jumlah transaksi</div>
+              <div className="font-semibold text-lg">{summary.count}</div>
             </div>
-            <div>
-              <div className="text-muted-foreground">Total</div>
-              <div className="font-semibold">Rp {summary.total.toLocaleString()}</div>
+            <div className="bg-slate-50 p-3 rounded-lg">
+              <div className="text-muted-foreground text-xs">Total</div>
+              <div className="font-semibold text-lg">{fmt(summary.total)}</div>
             </div>
-            <div>
-              <div className="text-muted-foreground">Tunai</div>
-              <div className="font-semibold">Rp {summary.cashTotal.toLocaleString()}</div>
+            <div className="bg-green-50 p-3 rounded-lg">
+              <div className="text-muted-foreground text-xs flex items-center gap-1">
+                <DollarSign className="h-3 w-3" />
+                Tunai
+              </div>
+              <div className="font-semibold text-lg">{fmt(summary.cashTotal)}</div>
             </div>
-            <div>
-              <div className="text-muted-foreground">Debit</div>
-              <div className="font-semibold">Rp {summary.debitTotal.toLocaleString()}</div>
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="text-muted-foreground text-xs flex items-center gap-1">
+                <CreditCard className="h-3 w-3" />
+                Debit
+              </div>
+              <div className="font-semibold text-lg">{fmt(summary.debitTotal)}</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Daftar Transaksi</CardTitle>
-          <CardDescription>Terbaru ke terlama</CardDescription>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Daftar Transaksi</CardTitle>
+          <CardDescription className="text-sm">Terbaru ke terlama</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -173,40 +256,46 @@ export default function CashierTransactionsPage() {
           ) : filtered.length === 0 ? (
             <p className="text-sm text-muted-foreground">Belum ada transaksi.</p>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {groups.map((g) => (
                 <div key={g.key}>
                   <div className="mb-2 flex items-center justify-between">
                     <div className="text-sm font-semibold">{new Date(g.key).toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                    <div className="text-sm text-muted-foreground">Total hari ini: <span className="font-semibold">{fmt(g.total)}</span></div>
+                    <div className="text-sm text-muted-foreground">Total: <span className="font-semibold">{fmt(g.total)}</span></div>
                   </div>
-                  <div className="divide-y">
+                  <div className="space-y-2">
                     {g.items.map((t) => (
                       <div
                         key={t.id}
-                        className="py-3 px-2 -mx-2 rounded-md flex items-start justify-between gap-4 hover:bg-slate-50 cursor-pointer"
+                        className="p-3 border rounded-lg bg-white shadow-sm"
                         onClick={() => setSelected(t)}
                       >
-                        <div className="min-w-0">
-                          <div className="text-sm font-medium flex items-center gap-2">
-                            <span>{t.paymentMethod === "CASH" ? "Tunai" : "Debit"} • {fmt(t.totalAmount)}</span>
-                            <span className="text-xs text-muted-foreground">• {t.transactionItems.length} item</span>
-                            {activeShift ? (
-                              t.shiftId === activeShift.id ? (
-                                <span className="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2 py-0.5 text-[10px]">Aktif</span>
-                              ) : (
-                                <span className="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-2 py-0.5 text-[10px]">Sebelumnya</span>
-                              )
-                            ) : null}
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Badge variant={t.paymentMethod === "CASH" ? "default" : "secondary"} className="text-xs">
+                                {t.paymentMethod === "CASH" ? "Tunai" : "Debit"}
+                              </Badge>
+                              {activeShift && (
+                                <Badge variant={t.shiftId === activeShift.id ? "default" : "outline"} className="text-xs">
+                                  {t.shiftId === activeShift.id ? "Aktif" : "Sebelumnya"}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="text-sm font-medium">{fmt(t.totalAmount)}</div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              {new Date(t.createdAt).toLocaleString()} • #{t.id}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {t.transactionItems.length} item
+                            </div>
+                            {t.paymentMethod === "CASH" && (
+                              <div className="text-xs text-muted-foreground mt-1">
+                                Uang: {fmt(t.cashAmount ?? 0)} • Kembali: {fmt(t.changeAmount ?? 0)}
+                              </div>
+                            )}
                           </div>
-                          <div className="text-xs text-muted-foreground break-all">{new Date(t.createdAt).toLocaleString()} • #{t.id}</div>
-                          {t.paymentMethod === "CASH" && (
-                            <div className="text-xs text-muted-foreground">Uang: {fmt(t.cashAmount ?? 0)} • Kembali: {fmt(t.changeAmount ?? 0)}</div>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="text-sm font-semibold">{fmt(t.totalAmount)}</div>
-                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setSelected(t); }} className="gap-1">
+                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setSelected(t); }} className="gap-1 h-8 px-2">
                             <Eye className="size-4" /> Detail
                           </Button>
                         </div>
@@ -224,53 +313,72 @@ export default function CashierTransactionsPage() {
       {selected && (
         <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/50" onClick={() => setSelected(null)} />
-          <div className="absolute inset-0 flex items-center justify-center p-4">
-            <div className="w-full max-w-lg rounded-lg bg-white shadow-lg">
-              <div className="border-b px-4 py-3 flex items-center justify-between">
+          <div className="absolute inset-0 flex items-end justify-center">
+            <div className="w-full max-w-lg rounded-t-lg bg-white shadow-lg max-h-[90vh] overflow-auto animate-in slide-in-from-bottom">
+              <div className="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between">
                 <div className="font-semibold">Detail Transaksi</div>
-                <Button size="sm" variant="secondary" onClick={() => setSelected(null)}>Tutup</Button>
+                <Button size="sm" variant="secondary" onClick={() => setSelected(null)}>
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
               <div className="p-4 space-y-4 text-sm">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-2 py-0.5 text-[10px]">
+                    <Badge variant={selected.paymentMethod === "CASH" ? "default" : "secondary"}>
                       {selected.paymentMethod === "CASH" ? "Tunai" : "Debit"}
-                    </span>
+                    </Badge>
                     {activeShift && (
-                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] ${selected.shiftId === activeShift.id ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"}`}>
+                      <Badge variant={selected.shiftId === activeShift.id ? "default" : "outline"}>
                         {selected.shiftId === activeShift.id ? "Shift aktif" : "Shift sebelumnya"}
-                      </span>
+                      </Badge>
                     )}
                   </div>
-                  <div className="text-base font-semibold">{fmt(selected.totalAmount)}</div>
+                  <div className="text-lg font-semibold">{fmt(selected.totalAmount)}</div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-muted-foreground">
-                  <div>Nomor: <span className="font-mono text-slate-700">#{selected.id}</span></div>
-                  <div>Waktu: {new Date(selected.createdAt).toLocaleString()}</div>
+                <div className="space-y-2 text-xs text-muted-foreground">
+                  <div className="flex justify-between">
+                    <span>Nomor:</span>
+                    <span className="font-mono text-slate-700">#{selected.id}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Waktu:</span>
+                    <span className="text-slate-700">{new Date(selected.createdAt).toLocaleString()}</span>
+                  </div>
                   {selected.paymentMethod === "CASH" ? (
                     <>
-                      <div>Uang diterima: <span className="text-slate-700">{fmt(selected.cashAmount ?? 0)}</span></div>
-                      <div>Kembalian: <span className="text-slate-700">{fmt(selected.changeAmount ?? 0)}</span></div>
+                      <div className="flex justify-between">
+                        <span>Uang diterima:</span>
+                        <span className="text-slate-700">{fmt(selected.cashAmount ?? 0)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Kembalian:</span>
+                        <span className="text-slate-700">{fmt(selected.changeAmount ?? 0)}</span>
+                      </div>
                     </>
                   ) : (
-                    <div className="md:col-span-2">Nomor kartu: <span className="text-slate-700">{selected.debitCardNumber ?? "-"}</span></div>
+                    <div className="flex justify-between">
+                      <span>Nomor kartu:</span>
+                      <span className="text-slate-700">{selected.debitCardNumber ?? "-"}</span>
+                    </div>
                   )}
                 </div>
 
-                <div className="mt-1">
-                  <div className="font-medium mb-1">Item</div>
+                <div>
+                  <div className="font-medium mb-2">Item</div>
                   {selected.transactionItems.length === 0 ? (
                     <div className="text-xs text-muted-foreground">Tidak ada item.</div>
                   ) : (
-                    <div className="border rounded-md divide-y">
+                    <div className="space-y-2">
                       {selected.transactionItems.map((it) => (
-                        <div key={it.id} className="px-3 py-2 flex items-center justify-between gap-4">
-                          <div>
-                            <div className="font-medium text-[13px]">{it.product?.name ?? it.productId}</div>
-                            <div className="text-[11px] text-muted-foreground">{it.quantity} × {fmt(it.price)}</div>
+                        <div key={it.id} className="p-2 border rounded-md">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <div className="font-medium text-sm">{it.product?.name ?? it.productId}</div>
+                              <div className="text-xs text-muted-foreground">{it.quantity} × {fmt(it.price)}</div>
+                            </div>
+                            <div className="text-sm font-semibold">{fmt(it.price * it.quantity)}</div>
                           </div>
-                          <div className="text-sm font-semibold">{fmt(it.price * it.quantity)}</div>
                         </div>
                       ))}
                     </div>
