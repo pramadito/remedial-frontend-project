@@ -79,13 +79,13 @@ export default function AdminProductsPage() {
   return (
     <div className="space-y-6">
       <AdminBreadcrumbs items={[{ label: "Admin", href: "/admin" }, { label: "Products" }]} />
-      <section className="rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-6 text-white shadow-sm">
+      <section className="rounded-xl bg-gradient-to-r from-primary to-primary px-5 py-6 text-white shadow-sm">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-wide">Products</h1>
             <p className="text-indigo-100 text-sm">Kelola produk dan stok</p>
           </div>
-          <Button asChild className="bg-white text-indigo-700 hover:bg-white/90">
+          <Button asChild className="bg-white text-primary hover:bg-white/90">
             <Link href="/admin/products/new">Tambah Produk</Link>
           </Button>
         </div>
@@ -111,7 +111,7 @@ export default function AdminProductsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-indigo-50/60 text-indigo-900">
+              <thead className="bg-indigo-50/60 text-primary">
                 <tr className="text-left">
                   <th className="py-3 pl-4 pr-4 w-full max-w-xs">Nama</th>
                   <th className="py-3 pr-4 whitespace-nowrap w-1/12">Harga</th>
@@ -127,7 +127,7 @@ export default function AdminProductsPage() {
                     <td className="py-3 pr-4 align-middle whitespace-nowrap">{p.stock}</td>
                     <td className="py-3 pr-4 whitespace-nowrap text-right align-middle">
                       <div className="grid grid-flow-col auto-cols-max items-center gap-2 justify-end whitespace-nowrap">
-                        <Button variant="secondary" size="sm" asChild className="bg-indigo-600 text-white hover:bg-indigo-500">
+                        <Button variant="secondary" size="sm" asChild className="bg-primary text-white hover:bg-indigo-500">
                           <Link href={`/admin/products/${p.id}`}>Edit</Link>
                         </Button>
                         <Button
@@ -143,7 +143,7 @@ export default function AdminProductsPage() {
                           size="sm"
                           disabled={isAdjusting}
                           onClick={() => onAdjust(p.id, 1)}
-                          className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                          className="border-indigo-200 text-primary hover:bg-indigo-50"
                         >
                           + Stok
                         </Button>
@@ -152,7 +152,7 @@ export default function AdminProductsPage() {
                           size="sm"
                           disabled={isAdjusting}
                           onClick={() => onAdjust(p.id, -1)}
-                          className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                          className="border-indigo-200 text-primary hover:bg-indigo-50"
                         >
                           - Stok
                         </Button>

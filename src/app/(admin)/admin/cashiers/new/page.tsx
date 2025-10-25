@@ -18,7 +18,7 @@ export default function AdminCashierNewPage() {
           { label: "Tambah" },
         ]}
       />
-      <section className="rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-5 py-6 text-white shadow-sm">
+      <section className="rounded-xl bg-gradient-to-r from-primary to-indigo-500 px-5 py-6 text-white shadow-sm">
         <h1 className="text-2xl font-semibold tracking-wide">Tambah Kasir</h1>
         <p className="text-indigo-100 text-sm">Isi formulir untuk menambahkan akun kasir</p>
       </section>

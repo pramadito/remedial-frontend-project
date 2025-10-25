@@ -52,7 +52,7 @@ export default function AdminSidebar() {
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-indigo-700 text-white"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-primary text-white"
         aria-label="Toggle menu"
       >
         {isOpen ? <XIcon className="size-6" /> : <MenuIcon className="size-6" />}
@@ -60,7 +60,7 @@ export default function AdminSidebar() {
 
       {/* Top Navigation Bar - Fixed on all screen sizes */}
       <header
-        className={`sidebar-container fixed inset-x-0 top-0 z-40 w-full border-b bg-gradient-to-r from-indigo-700 to-indigo-800 text-indigo-50 transform transition-transform duration-300 ease-in-out ${
+        className={`sidebar-container fixed inset-x-0 top-0 z-40 w-full border-b bg-gradient-to-r from-primary to-indigo-800 text-indigo-50 transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-y-0" : "-translate-y-full md:translate-y-0"
         } ${!isOpen ? "md:flex" : "flex"}`}
       >
