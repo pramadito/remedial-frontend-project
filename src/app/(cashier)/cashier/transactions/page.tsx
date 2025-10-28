@@ -309,12 +309,12 @@ export default function CashierTransactionsPage() {
         </CardContent>
       </Card>
 
-      {/* Detail Modal */}
+      {/* Detail Modal - Centered */}
       {selected && (
         <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/50" onClick={() => setSelected(null)} />
-          <div className="absolute inset-0 flex items-end justify-center">
-            <div className="w-full max-w-lg rounded-t-lg bg-white shadow-lg max-h-[90vh] overflow-auto animate-in slide-in-from-bottom">
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <div className="w-full max-w-lg rounded-lg bg-white shadow-lg max-h-[90vh] overflow-auto animate-in fade-in zoom-in-95">
               <div className="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between">
                 <div className="font-semibold">Detail Transaksi</div>
                 <Button size="sm" variant="secondary" onClick={() => setSelected(null)}>
